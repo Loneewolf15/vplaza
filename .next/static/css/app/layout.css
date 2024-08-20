@@ -1192,8 +1192,14 @@ video {
 .text-right {
   text-align: right;
 }
+.text-end {
+  text-align: end;
+}
 .align-middle {
   vertical-align: middle;
+}
+.font-sans {
+  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .text-2xl {
   font-size: 1.5rem;

@@ -70,8 +70,8 @@ const page = () => {
               Seller
             </span>
           </p>
-          <p className="absolute right-0 text-main font-bold text-3xl top-0">
-            ₦8500
+          <p className="absolute font-sans right-0 text-main font-semibold text-3xl top-0">
+            ₦8,500
           </p>
         </div>
 
@@ -133,7 +133,7 @@ const page = () => {
             </svg>
           </Button>
         </div>
-        <div className="w-full font-bold flex gap-4 mt-8 py-2">
+        <div className="w-full font-bold flex gap-1 mt-8 py-2">
           <Button className="px-4 shrink-0 text-xs">Call Sender</Button>
           <Button
             variant="outline"

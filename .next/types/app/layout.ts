@@ -1,4 +1,4 @@
-// File: /home/askme/unime-main/src/app/layout.js
+// File: /home/fortuneehis/vplaza/src/app/layout.js
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

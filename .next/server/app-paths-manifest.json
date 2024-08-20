@@ -1,3 +1,4 @@
 {
-  "/market/page": "app/market/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/product/page": "app/product/page.js"
 }

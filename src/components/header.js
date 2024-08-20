@@ -10,10 +10,6 @@ const Header = ({ title }) => {
         />
         <h1 className="font-black text-2xl">{title}</h1>
       </div>
-      <div className="bg-[#D9D9D9] flex items-center gap-1 my-4 p-2 relative rounded-xl">
-        <IoSearch size={20} className="shrink-0" fill="#979797" />
-        <input className="bg-transparent shrink min-w-0 max-w-full outline-none flex-1" />
-      </div>
     </header>
   );
 };

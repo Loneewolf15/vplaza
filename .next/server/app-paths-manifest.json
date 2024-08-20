@@ -1,7 +1,4 @@
 {
-  "/product/page": "app/product/page.js",
-  "/store/page": "app/store/page.js",
-  "/market/page": "app/market/page.js",
-  "/profile/page": "app/profile/page.js",
-  "/food/page": "app/food/page.js"
+  "/page": "app/page.js",
+  "/services/page": "app/services/page.js"
 }

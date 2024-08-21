@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -26,10 +26,11 @@ import {
 import { FaWhatsapp } from "react-icons/fa";
 import { MdArrowLeft } from "react-icons/md";
 import { IoLogoWhatsapp } from "react-icons/io";
+import Delete from "@/components/delete";
 
 const page = () => {
   const router = useRouter();
-
+  const [deleteModal, setDeleteModal] = useState(false);
   return (
     <main className="grid min-h-screen grid-cols-12 items-start lg:pt-8">
       <section className="col-span-12 lg:col-start-1 lg:col-end-8 lg:p-4 flex flex-col lg:flex-row gap-2">
@@ -49,7 +50,11 @@ const page = () => {
               </div>
             ))}
           </div>
-          <FaTrash size={24} className="fill-main" />
+          <FaTrash
+            onClick={() => setDeleteModal((prev) => !prev)}
+            size={24}
+            className="fill-main"
+          />
         </div>
         <div className="order-1 lg:order-2 lg:max-w-[90%] lg:w-full px-4 lg:pr-8 relative lg:rounded-md aspect-square lg:aspect-square overflow-hidden">
           <Image
@@ -119,6 +124,7 @@ const page = () => {
           <p className="font-bold text-end">View More</p>
         </div>
       </section>
+      {deleteModal && <Delete />}
     </main>
   );
 };

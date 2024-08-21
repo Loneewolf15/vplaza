@@ -1,7 +1,5 @@
 {
-  "/notifications/page": "app/notifications/page.js",
-  "/wishlist/page": "app/wishlist/page.js",
-  "/food2/page": "app/food2/page.js",
-  "/product/page": "app/product/page.js",
-  "/category/[category]/page": "app/category/[category]/page.js"
+  "/page": "app/page.js",
+  "/food/page": "app/food/page.js",
+  "/storeproductview/page": "app/storeproductview/page.js"
 }

@@ -1,6 +1,7 @@
 {
+  "/store/food/page": "app/store/food/page.js",
   "/page": "app/page.js",
-  "/food/page": "app/food/page.js",
-  "/storeproductview/page": "app/storeproductview/page.js",
-  "/store/page": "app/store/page.js"
+  "/store/[store]/page": "app/store/[store]/page.js",
+  "/wishlist/page": "app/wishlist/page.js",
+  "/store/product/page": "app/store/product/page.js"
 }

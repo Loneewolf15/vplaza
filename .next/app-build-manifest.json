@@ -21,10 +21,30 @@
       "static/chunks/main-app.js",
       "static/chunks/app/storeproductview/page.js"
     ],
-    "/store/page": [
+    "/services/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/store/page.js"
+      "static/chunks/app/services/page.js"
+    ],
+    "/store/food/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/store/food/page.js"
+    ],
+    "/store/[store]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/store/[store]/page.js"
+    ],
+    "/wishlist/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/wishlist/page.js"
+    ],
+    "/store/product/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/store/product/page.js"
     ]
   }
 }

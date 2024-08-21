@@ -1,12 +1,16 @@
+"use client";
 import { Product } from "@/assets";
+import Filter from "@/components/filter";
 import Header from "@/components/header";
 import Image from "next/image";
+import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { FiFilter } from "react-icons/fi";
 import { IoFilter, IoSearch } from "react-icons/io5";
 import { MdFilter } from "react-icons/md";
 
 const page = () => {
+  const [showFilter, setShowFilter] = useState(false);
   return (
     <main className="pt-8 px-2">
       <Header title="Food" />
@@ -16,7 +20,10 @@ const page = () => {
       </div>
       <div className="flex justify-start gap-2 my-4">
         {/** Filter */}
-        <div className="flex gap-1 items-center rounded-full px-2 text-main text-xs border-main border-2">
+        <div
+          onClick={() => setShowFilter((prev) => !prev)}
+          className="flex gap-1 items-center rounded-full px-2 text-main text-xs border-main border-2"
+        >
           Filter <FiFilter className="fill-main stroke-none " />
         </div>
         {/** Food */}
@@ -53,6 +60,9 @@ const page = () => {
           </div>
         </div>
       ))}
+      {showFilter && (
+        <Filter type="food" onClick={() => setShowFilter(false)} />
+      )}
     </main>
   );
 };

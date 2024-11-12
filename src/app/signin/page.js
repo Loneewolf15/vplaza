@@ -46,6 +46,10 @@ const Page = () => {
           "userData",
           JSON.stringify(response.data.data.userData)
         );
+        localStorage.setItem(
+          "shopDetails",
+          JSON.stringify(response.data.shopDetails)
+        );
         console.log("Success:", response.data);
 
         const token = localStorage.getItem("token");

@@ -14,9 +14,9 @@ const Page = () => {
   const [imageFiles, setImageFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [product_name, setProductName] = useState("");
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
+  const [amount, setPrice] = useState("");
+  const [product_desc, setDescription] = useState("");
+  const [product_cat, setCategory] = useState("");
   const fileInputRef = useRef(null);
 let requestID = "rid_1983";
 const userData = JSON.parse(localStorage.getItem("userData"));
@@ -59,7 +59,7 @@ const userData = JSON.parse(localStorage.getItem("userData"));
     }
   };
 
-  const handleSave = async () => {
+  const handleSavet = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -72,9 +72,9 @@ const userData = JSON.parse(localStorage.getItem("userData"));
         {
           imageUrls,
           product_name,
-          price,
-          description,
-          category,
+          amount,
+          product_desc,
+          product_cat,
           selectedState,
           requestID,
         },
@@ -103,9 +103,9 @@ const userData = JSON.parse(localStorage.getItem("userData"));
           formData.append(`image${index}`, file);
         });
         formData.append("product_name", productName);
-        formData.append("price", price);
-        formData.append("description", description);
-        formData.append("category", category);
+        formData.append("amount", amount);
+        formData.append("product_desc", product_desc);
+        formData.append("product_cat", product_cat);
         formData.append("selectedState", selectedState);
         formData.append("requestID", requestID);
         const fallbackResponse = await axios.post(
@@ -132,6 +132,96 @@ const userData = JSON.parse(localStorage.getItem("userData"));
       setLoading(false);
     }
   };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const imageUrls = await Promise.all(
+        imageFiles.map((file) => uploadImageToSanity(file))
+      );
+  
+      // Prepare data for the backend
+      const dataToSend = {
+        product_name,
+        amount,
+        product_desc,
+        product_cat,
+        selectedState,
+        requestID,
+        // Dynamically setting product_img fields based on the number of images
+        ...imageUrls.reduce((acc, url, index) => {
+          acc[`product_img${index + 1}`] = url;
+          return acc;
+        }, {}),
+      };
+  
+      // Console log the data being sent
+      console.log("Data being sent to the backend:", dataToSend);
+  
+      const response = await axios.post(
+        "https://api.vplaza.com.ng/products/createProduct",
+        dataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        console.log(response);
+        alert("Product added successfully");
+        router.push("/");
+      } else {
+        alert("Failed to add product");
+      }
+    } catch (error) {
+      console.error("Error uploading to Sanity:", error);
+  
+      try {
+        const token = localStorage.getItem("token");
+        const formData = new FormData();
+  
+        // Add image files dynamically to formData
+        imageFiles.forEach((file, index) => {
+          formData.append(`product_img${index + 1}`, file);
+        });
+        formData.append("product_name", product_name);
+        formData.append("amount", amount);
+        formData.append("product_desc", product_desc);
+        formData.append("product_cat", product_cat);
+        formData.append("selectedState", selectedState);
+        formData.append("requestID", requestID);
+  
+        // Console log the formData being sent
+        console.log("FormData being sent to the fallback endpoint:", formData);
+  
+        const fallbackResponse = await axios.post(
+          "https://api.vplaza.com.ng/products/createProduct2",
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (fallbackResponse.status === 200) {
+          alert("Product added successfully using fallback endpoint");
+          router.push("/");
+        } else {
+          alert("Failed to add product using fallback endpoint");
+        }
+      } catch (fallbackError) {
+        console.error("Error with fallback upload:", fallbackError);
+        alert("Failed to add product");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
   return (
     <div className="relative flex flex-col items-center p-6 bg-[#D9D9D9] rounded-lg shadow-lg w-full min-h-screen">
@@ -232,7 +322,7 @@ const userData = JSON.parse(localStorage.getItem("userData"));
         </div>
       </div>
       <select
-        value={category}
+        value={product_cat}
         onChange={(e) => setCategory(e.target.value)}
         className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-bg-[#004AAD]-600"
       >
@@ -240,25 +330,25 @@ const userData = JSON.parse(localStorage.getItem("userData"));
         <option value="furniture">Furniture</option>
         <option value="accessories">Accessories</option>
         <option value="phones">Phones</option>
-        <option value="food">Food</option>
+        {/* <option value="food">Food</option> */}
         <option value="electronics">Electronics</option>
         <option value="tops">Tops</option>
         <option value="pants">Pants</option>
-        <option value="dress">Dress</option>
+        <option value="women">Women</option>
         <option value="services">Services</option>
       </select>
 
       <input
         type="text"
         placeholder="Price"
-        value={price}
+        value={amount}
         onChange={(e) => setPrice(e.target.value)}
         className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-bg-[#004AAD]-600"
       />
 
       <textarea
         placeholder="Description"
-        value={description}
+        value={product_desc}
         onChange={(e) => setDescription(e.target.value)}
         className="border border-gray-300 p-3 rounded-lg w-full mb-4 focus:outline-none focus:ring-2 focus:ring-bg-[#004AAD]-600"
       ></textarea>

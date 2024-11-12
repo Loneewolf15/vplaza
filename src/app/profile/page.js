@@ -39,16 +39,16 @@ const Page = () => {
         );
 
         // Handle the response data
-        setUser(response.data);
-        console.log(response.data.imageUrl);
-         Umage = response.data.imageUrl;
-         console.log(Umage);
-        console.log(response.data);
-       // localStorage.setItem("token", response.data.access_token);
-        localStorage.setItem(
-          "userData",
-          JSON.stringify(response.data)
-        );
+      //   setUser(response.data);
+      //   console.log(response.data.imageUrl);
+      //    Umage = response.data.imageUrl;
+      //    console.log(Umage);
+         console.log(response.data);
+      //  // localStorage.setItem("token", response.data.access_token);
+      //   localStorage.setItem(
+      //     "userData",
+      //     JSON.stringify(response.data)
+      //   );
       } catch (error) {
         // Handle any errors
         console.error("Error fetching data:", error);

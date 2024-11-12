@@ -33,10 +33,11 @@ const Page = () => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     const uEmail = localStorage.getItem("emailn");
     if (userData) {
+      console.log(userData);
       setUsername(userData.username || "");
       setGender(userData.gender === 1 ? "Male" : "Female");
       setPhone(userData.phone || "");
-      setEmail(userData.email || ""); 
+      setEmail(uEmail || ""); 
       setUserLocation(userData.user_location || "");
       // Set email from localStorage
       setImageUrl(userData.imageUrl || "");
@@ -55,6 +56,7 @@ const Page = () => {
         );
         const data = response.data;
         setLocations(data);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching locations:", error);
       }
@@ -127,6 +129,8 @@ const Page = () => {
           console.log(response);
           alert("Profile updated successfully");
           router.push("/");
+        } else if(response.message === "signature verification failed") {
+          router.push("/signin");
         } else {
           console.log(response);
           alert("Failed to update profile");
@@ -141,7 +145,7 @@ const Page = () => {
         formData.append("gender", gender === "Male" ? 1 : 0);
         formData.append("phone", phone);
         formData.append("servicesOffered", servicesOffered);
-        formData.append("email", email); // Add email to form data
+        formData.append("email", email); 
         formData.append("requestID", requestID);
         formData.append("user_location", user_location);
 
@@ -164,6 +168,8 @@ const Page = () => {
           alert("Profile updated successfully");
           router.push("/");
           return;
+        } else if(response.message === "signature verification failed") {
+          router.push("/signin");
         } else {
           console.log(response);
           alert("Failed to update profile");
@@ -204,8 +210,11 @@ const Page = () => {
 
       if (response.status === 200) {
         console.log(response);
+        console.log(response.data.data);
         alert("Profile updated successfully");
         router.push("/");
+      } else if(response.message === "signature verification failed") {
+        router.push("/signin");
       } else {
         console.log(response);
         alert("Failed to update profile");

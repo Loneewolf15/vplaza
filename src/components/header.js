@@ -1,3 +1,4 @@
+"use client";
 import { IoArrowBack, IoSearch } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 

@@ -30,9 +30,10 @@ const Page = () => {
 
   // Load data from localStorage on component mount
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    const uEmail = localStorage.getItem("emailn");
+    const userData = JSON.parse(localStorage.getItem("shopDetails"));
+  
     if (userData) {
+      console.log(userData);
       setShopName(userData.shop_name || "");
       setChatLink(userData.shop_whatsapp_link || "");
       setDescription(userData.shop_desc);
@@ -40,9 +41,7 @@ const Page = () => {
       setServicesOffered(userData.service_offered || "");
       // Set email from localStorage
       setImageUrl(userData.shop_image_url || "");
-      setImagePreview(userData.imageUrl || "");
-    } else if (uEmail) {
-      setEmail(uEmail || ""); // Set email from localStorage
+      setImagePreview(userData.shop_image_url || "");
     };
 
     const fetchLocations = async () => {
@@ -104,7 +103,7 @@ const Page = () => {
 
         // Send the data to the backend
         const response = await axios.post(
-          "https://api.vplaza.com.ng/shop/editShop",
+          "https://api.vplaza.com.ng/shops/editShop",
           {
             shop_image_url: uploadedImageUrl,
             shop_name,
@@ -181,7 +180,7 @@ const Page = () => {
 
       // If no new image is selected, send the existing imageUrl to the backend
       const response = await axios.post(
-        "https://api.vplaza.com.ng/shop/editShop",
+        "https://api.vplaza.com.ng/shops/editShop",
         {
           shop_image_url: uploadedImageUrl,
           shop_name,
@@ -202,10 +201,13 @@ const Page = () => {
         console.log(response);
         alert("Shop updated successfully");
         router.push("/");
-      } else {
+      } else if(response.message === "signature verification failed") {
+        router.push("/signin");
+      }
+      else {
         console.log(response);
         alert("Failed to update Shop");
-      }
+      } 
     }
   } catch (error) {
     console.error("Error:", error);
@@ -297,7 +299,7 @@ const Page = () => {
               />
             </div>
             <div className="w-[100%]">
-              <div className="ml-[10%] mt-4">shop_desc Number:</div>
+              <div className="ml-[10%] mt-4">Shop Description:</div>
             </div>
             <input
               value={shop_desc}

@@ -16,7 +16,7 @@ import {
 } from "../assets";
 import { IoIosHeart } from "react-icons/io";
 import { FaFilter } from "react-icons/fa";
-import { IoStarSharp } from "react-icons/io5";
+import { FaStar, FaRegStar } from "react-icons/fa";
 import { MdStore, MdHomeFilled } from "react-icons/md";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import axios from "axios";
@@ -63,7 +63,7 @@ const Page = () => {
 
       if (tkenn) {
         // If token exists, use the 'getProductByUni' endpoint
-        endpoint = "https://api.vplaza.com.ng/products/getProductByUni";
+        endpoint = "https://api.vplaza.com.ng/products/getProductByUniL";
 
         // Dynamically set the university from localStorage (userData)
         if (userData && userData.user_location) {
@@ -99,10 +99,11 @@ const Page = () => {
         console.log(`Response from endpoint: ${endpoint}`, response);
 
         // Check if the response contains the message "no product from this university"
-        if (response.data.status === false && response.data.message === "failed to get product from this uni") {
+        if (response.data.status === false && response.data.message === "Failed to get product from this uni") {
           setError("No products are available from this university. Please check back later or select a different location.");
         } else {
-          const fetchedItems = shuffleArray(response.data);
+          console.log(response.data.data);
+          const fetchedItems = shuffleArray(response.data.data);
 
           if (tkenn) {
             // Show only the first 25 products when logged in
@@ -129,67 +130,98 @@ const Page = () => {
     }
   };
 
-  const ProductList = ({ items }) => {
+  const StarRating = ({ rating }) => {
+    const totalStars = 5;
+    const ratingNumber = parseInt(rating) || 0;
+    
     return (
-      <div className="w-full">
-        <div className="grid grid-cols-2 w-full gap-4">
-          {Array.isArray(items) &&
-            items.map((item, index) => (
-              <div
-                onClick={() => {
-                  if (!token) {
-                    router.push("/signin");
-                  } else {
-                    router.push(`/product/${item._id}`);
-                  }
-                }}
-                key={index}
-                className="flex flex-col items-center p-4 border border-gray-300 rounded"
-              >
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  width={150}
-                  height={150}
-                  className="object-cover"
-                />
-                <div className="w-full">
-                  <div className="mt-2 text-[10px] font-semibold">
-                    {item.name}
-                  </div>
-                </div>
-                <div className="flex text-sm w-full">
-                  <div className="flex">
-                    {item.rating}
-                    <IoStarSharp
-                      color="#FFF500"
-                      className="mt-[2px] pl-[2px]"
-                    />
-                  </div>
-                  <div className="pl-2">{item.seller}</div>
-                </div>
-                <div className="font-semibold flex w-full text-lg">
-                  <div className="text-md">{item.price}</div>
-                  <div className="text-sm mt-[8px] ml-3 text-[#004AAD] font-medium">
-                    {item.status}
-                  </div>
-                </div>
-              </div>
+        <div className="flex">
+            {[...Array(totalStars)].map((_, index) => (
+                <span key={index}>
+                    {index < ratingNumber ? (
+                        <FaStar size={10} className="fill-[#FFF500]" />
+                    ) : (
+                        <FaRegStar size={10} className="fill-[#FFF500]" />
+                    )}
+                </span>
             ))}
         </div>
-        {token && items.length === 25 && (
-          <div
-            className="text-center mt-4 text-blue-600 cursor-pointer"
-            onClick={handleViewMoreProducts}
-          >
-            View More Products
-          </div>
-        )}
-      </div>
     );
+};
+
+const ProductList = ({ items }) => {
+    const router = useRouter();
+
+    const handleProductClick = (item) => {
+        if (!token) {
+            router.push("/signin");
+        } else {
+            // Store the product data before navigation
+            localStorage.setItem('selectedProduct', JSON.stringify(item));
+            router.push(`/product/${item.details.product_id}`);
+        }
+    };
+ const getRating = (items) => {
+      if (items.reviews && items.reviews.length > 0) {
+          return items.reviews[0].rating;
+      }
+      return "0";
   };
 
-  const handleCategoryClick = async (category) => {
+  
+    return (
+        <div className="w-full">
+            <div className="grid grid-cols-2 w-full gap-4">
+                {Array.isArray(items) &&
+                    items.map((item, index) => (
+                        <div
+                            onClick={() => handleProductClick(item)}
+                            key={index}
+                            className="flex flex-col items-center p-4 border border-gray-300 rounded cursor-pointer transition-all hover:shadow-lg"
+                        >
+                            <img
+                                src={item.details.product_img1}
+                                alt={item.details.product_name}
+                                width={150}
+                                height={150}
+                                className="w-[150px] h-[150px] object-cover"
+                            />
+                            <div className="w-full">
+                                <div className="mt-2 text-[10px] font-bold">
+                                    {item.details.product_name}
+                                </div>
+                            </div>
+                            <div className="flex flex-col text-sm w-full">
+                                <div className="flex items-center">
+                                <StarRating rating={getRating(item)} />
+                                </div>
+                                <div className="font-bold text-md">{item.shopDetails.shop_name}</div>
+                            </div>
+                            <div className="font-semibold flex w-full text-lg">
+                                <div className="text-md">₦{item.details.amount}</div>
+                                <div className="text-sm mt-[8px] ml-3 text-[#004AAD] font-medium">
+                                    {item.status}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+            </div>
+            {token && items.length === 50 && (
+                <div
+                    className="text-center mt-4 text-blue-600 cursor-pointer"
+                    onClick={handleViewMoreProducts}
+                >
+                    View More Products
+                </div>
+            )}
+        </div>
+    );
+};
+
+
+  
+
+  const handleCategoryClicky = async (category) => {
     const tkenn = localStorage.getItem("token");
     const requestID = "rid_1983"; // Generate request ID
     const userData = JSON.parse(localStorage.getItem("userData"));
@@ -247,6 +279,54 @@ const Page = () => {
         console.error("Error fetching products by category:", error);
         alert("An error occurred while fetching products.");
     }
+};
+
+// Modified handleCategoryClick function
+const handleCategoryClick = async (category) => {
+  const tkenn = localStorage.getItem("token");
+  const requestID = "rid_1983";
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
+  if (!userData || !userData.user_location) {
+      console.error("University location not found in userData");
+      return;
+  }
+
+  const university = userData.user_location;
+  const endpoint = "https://api.vplaza.com.ng/products/getProductByUniCatL";
+  
+  const requestData = {
+      requestID,
+      university,
+      category,
+  };
+
+  const config = tkenn ? {
+      headers: {
+          Authorization: `Bearer ${tkenn}`,
+      },
+  } : {};
+
+  try {
+      const response = await axios.post(endpoint, requestData, config);
+      
+      if (response.data.status) {
+          // Store the category data in localStorage
+          localStorage.setItem('categoryData', JSON.stringify({
+              category,
+              products: response.data.data,
+              timestamp: Date.now()
+          }));
+          
+          // Navigate to the category page
+          router.push(`/category/${category}`);
+      } else {
+          alert(response.data.message || "No products found in this category.");
+      }
+  } catch (error) {
+      console.error("Error fetching products by category:", error);
+      alert("An error occurred while fetching products.");
+  }
 };
 
   return (
@@ -312,10 +392,10 @@ const Page = () => {
                   Health & Beauty
                 </div>
               </div>
-              <div onClick={() => handleCategoryClick("wears")}>
+              <div onClick={() => handleCategoryClick("women")}>
                 <Image src={Ten} alt="Wears" />
                 <div className="text-sm text-center text-white font-medium">
-                  Wears
+                  Women
                 </div>
               </div>
               <div onClick={() => handleCategoryClick("grocery")}>

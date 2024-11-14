@@ -40,24 +40,42 @@ const ProductDetailsPage = () => {
   }, []);
 
   const toggleWishlist = async () => {
-    try {
-      const response = await fetch('/api/wishlist/toggle', {
-        method: 'POST',
+  setLoading(true); // Start loader
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.post(
+      "https://vplaza.com.ng/products/addToWishList",
+      {
+        product_id: product.details.product_id,
+        r_id: "rid_1983"
+      },
+      {
         headers: {
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ productId: product.details.product_id }),
-      });
-      
-      if (!response.ok) throw new Error('Failed to update wishlist');
+      }
+    );
+
+    if (response.status === 200) {
+      // Toggle wishlist status locally
       setIsInWishlist(!isInWishlist);
+
       // Update the product data in localStorage
       const updatedProduct = { ...product, inWishList: isInWishlist ? 0 : 1 };
-      localStorage.setItem('selectedProduct', JSON.stringify(updatedProduct));
-    } catch (error) {
-      console.error('Error updating wishlist:', error);
+      localStorage.setItem("selectedProduct", JSON.stringify(updatedProduct));
+
+      console.log("Wishlist updated successfully.");
+    } else if (response.data.message === "signature verification failed") {
+      await router.push("/signin");
     }
-  };
+  } catch (error) {
+    console.error("Error updating wishlist:", error);
+  } finally {
+    setLoading(false); // Stop loader
+  }
+};
+
 
   const handleRatingSelect = (rating) => {
     setSelectedRating(rating);
@@ -195,7 +213,7 @@ const ProductDetailsPage = () => {
         <h1 className="font-bold mb-2 md:text-3xl">{product.details.product_name}</h1>
         <div className="relative">
           <p className="flex items-center text-xs gap-1">
-            {product.details.ratings}
+            {product.average_r.average}
             <span className="inline-block">
               <FaStar size={10} className="fill-[#FFF500]" />
             </span>
@@ -213,33 +231,39 @@ const ProductDetailsPage = () => {
           <p className="text-sm">{product.details.product_desc}</p>
         </div>
         <div className="mt-3">
-          <h2 className="font-bold text-sm mb-3">
-            Reviews on seller <span className="opacity-60">({product.reviews.length})</span>
-          </h2>
-          {product.reviews.map(({ username, desc, rating, img }, index) => (
-            <div
-              key={index}
-              className="my-4 border-b border-black py-2 border-opacity-10 flex gap-2"
-            >
-              <div className="w-8 h-8 shrink-0 relative">
-                <img
-                  className="rounded-full"
-                  fill
-                  src={img}
-                  alt="fan image"
-                />
-              </div>
-              <div>
-                <p className="font-bold text-sm">{username}</p>
-                <p className="text-xs">{desc}</p>
-                <div className="flex gap-1 mt-1">
-                  {Array.from({ length: parseInt(rating) }).map((_, i) => (
-                    <FaStar key={i} size={10} className="fill-[#FFF500]" />
-                  ))}
-                </div>
-              </div>
-            </div>
+        <h2 className="font-bold text-sm mb-3">
+  Reviews on seller <span className="opacity-60">({(product.reviews || []).length})</span>
+</h2>
+
+{product.reviews && product.reviews.length > 0 ? (
+  product.reviews.map(({ username, desc, rating, img }, index) => (
+    <div
+      key={index}
+      className="my-4 border-b border-black py-2 border-opacity-10 flex gap-2"
+    >
+      <div className="w-8 h-8 shrink-0 relative">
+        <img
+          className="rounded-full"
+          fill
+          src={img}
+          alt="fan image"
+        />
+      </div>
+      <div>
+        <p className="font-bold text-sm">{username}</p>
+        <p className="text-xs">{desc}</p>
+        <div className="flex gap-1 mt-1">
+          {Array.from({ length: parseInt(rating) }).map((_, i) => (
+            <FaStar key={i} size={10} className="fill-[#FFF500]" />
           ))}
+        </div>
+      </div>
+    </div>
+  ))
+) : (
+  <p>No reviews available</p>
+)}
+
         </div>
         <div className="flex flex-col">
           <p className="font-bold text-lg">Rate Product</p>

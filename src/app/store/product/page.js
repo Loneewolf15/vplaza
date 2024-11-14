@@ -59,6 +59,7 @@ const page = () => {
         if (response.data.status === false && response.data.message === "Failed to get product from this uni") {
           setError("No products are available from this university. Please check back later or select a different location.");
         } else {
+          console.log(response.data.data);
           const fetchedItems = shuffleArray(response.data.data);
           setItems(token ? fetchedItems.slice(0, 25) : fetchedItems);
         }
@@ -188,33 +189,34 @@ const page = () => {
       </section>
       <section className="flex mt-2 flex-wrap">
         {items.map((item) => (
-          <div key={item.id} className="w-4/12">
+          <div key={item.details.id} className="w-4/12">
             <div className="p-2 relative">
               <div className="relative">
                 <img
-                  src={item.product_img1 || Product}
+                  src={item.details.product_img1 || Product}
                   className="w-full rounded-lg cursor-pointer"
-                  alt={item.product_name}
+                  alt={item.details.product_name}
                   onClick={() => handleEditProduct(item)}
                 />
                 <IoTrashBin
                   size={24}
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => handleDelete(item.details.id)}
                   className="absolute bottom-0 fill-main right-0 bg-white p-1 cursor-pointer"
                 />
               </div>
               <div className="w-full">
                 <div className="mt-2 text-[10px] font-bold">
-                  {item.product_name}
+                  {item.details.product_name}
                 </div>
               </div>
               <div className="flex flex-col text-sm w-full">
-                <div className="flex items-center">
-                  <StarRating rating={getRating(item)} />
-                </div>
-                <div className="font-bold text-md">{item.shop_id}</div>
+                  {item.average_r.average}
+            <span className="inline-block">
+              <FaStar size={10} className="fill-[#FFF500]" />
+            </span>
+                <div className="font-bold text-md">{item.shopDetails.shop_name}</div>
               </div>
-              <p className="font-semibold font-sans text-sm">₦{parseInt(item.amount).toLocaleString()}</p>
+              <p className="font-semibold font-sans text-sm">₦{parseInt(item.details.amount).toLocaleString()}</p>
             </div>
           </div>
         ))}

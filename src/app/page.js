@@ -198,7 +198,7 @@ const ProductList = ({ items }) => {
                                 <div className="font-bold text-md">{item.shopDetails.shop_name}</div>
                             </div>
                             <div className="font-semibold flex w-full text-lg">
-                                <div className="text-md">₦{item.details.amount}</div>
+                                <div className="text-md">₦{parseInt(item.details.amount)}</div>
                                 <div className="text-sm mt-[8px] ml-3 text-[#004AAD] font-medium">
                                     {item.status}
                                 </div>
